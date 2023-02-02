@@ -17,16 +17,19 @@ export async function pollValidation(req, res, next) {
     const errorMessages = error.details.map((detail) => detail.message);
     return res.status(422).send(errorMessages);
   }
-  try {
-    const existPoll = await pollsCollection.findOne(poll.title);
-    console.log(existPoll);
-    if (existPoll) {
-      return res.status(409).send("A enquete já existe!");
-    }
 
-    res.locals.poll = poll;
-  } catch (err) {
-    res.status(500).send("Problema no servidor");
-  }
+  // try {
+  //   const existPoll = await pollsCollection.findOne({ title: poll.title });
+  //   console.log(existPoll);
+  //   if (existPoll) {
+  //     return res.status(409).send("A enquete já existe!");
+  //   }
+
+  // } catch (err) {
+  //   res.status(500).send("Problema no servidor");
+  // }
+
+  res.locals.poll = poll;
+
   next();
 }
