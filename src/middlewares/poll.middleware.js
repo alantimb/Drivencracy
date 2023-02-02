@@ -18,17 +18,6 @@ export async function pollValidation(req, res, next) {
     return res.status(422).send(errorMessages);
   }
 
-  // try {
-  //   const existPoll = await pollsCollection.findOne({ title: poll.title });
-  //   console.log(existPoll);
-  //   if (existPoll) {
-  //     return res.status(409).send("A enquete já existe!");
-  //   }
-
-  // } catch (err) {
-  //   res.status(500).send("Problema no servidor");
-  // }
-
   res.locals.poll = poll;
 
   next();

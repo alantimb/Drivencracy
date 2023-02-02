@@ -4,11 +4,11 @@ export async function createPoll(req, res) {
   const poll = res.locals.poll;
 
   try {
-    // const existPoll = await pollsCollection.findOne({ title: poll.title });
-    // console.log(existPoll);
-    // if (existPoll) {
-    //   return res.status(409).send("A enquete já existe!");
-    // }
+    const existPoll = await pollsCollection.findOne({ title: poll.title });
+    
+    if (existPoll) {
+      return res.status(409).send("A enquete já existe!");
+    }
     await pollsCollection.insertOne(poll);
 
     res.status(201).send("Enquete adicionada com sucesso");
