@@ -10,15 +10,23 @@ export async function pollValidation(req, res, next) {
   }
 
   const poll = { title, expireAt };
-  console.log(poll);
+
   const { error } = pollSchema.validate(poll, { abortEarly: false });
 
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
     return res.status(422).send(errorMessages);
   }
+  try {
+    const existPoll = await pollsCollection.findOne(poll.title);
+    console.log(existPoll);
+    if (existPoll) {
+      return res.status(409).send("A enquete já existe!");
+    }
 
-  res.locals.poll = poll;
-
+    res.locals.poll = poll;
+  } catch (err) {
+    res.status(500).send("Problema no servidor");
+  }
   next();
 }
