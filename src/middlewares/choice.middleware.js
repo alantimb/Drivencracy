@@ -1,31 +1,38 @@
 import { ObjectId } from "mongodb";
 import { choicesCollection, pollsCollection } from "../database/db.js";
+import { choiceSchema } from "../schema/choice.schema.js";
 
 export async function choiceValidation(req, res, next) {
   const { title, pollId } = req.body;
+  const choice = { title, pollId: pollId };
 
   try {
-    if (!title) {
-      res.status(422).send("Opção de voto sem título");
+    const { error } = choiceSchema.validate(choice, { abortEarly: false });
+
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      return res.status(422).send(errorMessages);
     }
 
-    const existPoll = await pollsCollection.findOne({ _id: ObjectId(pollId) });
+    const existPoll = await pollsCollection.findOne({
+      _id: ObjectId(choice.pollId),
+    });
 
     if (!existPoll) {
-      res.status(404).send("Enquete não existe");
+      return res.status(404).send("Enquete não existe");
     }
 
-    const existChoice = await choicesCollection.findOne({ title: title });
+    const existChoice = await choicesCollection.findOne({
+      title: choice.title,
+    });
 
     if (existChoice) {
-      res.status(409).send("Opção de voto já existente");
+      return res.status(409).send("Opção de voto já existente");
     }
-
-    const choice = { title, pollId };
 
     res.locals.choice = choice;
   } catch (err) {
-    res.status(500).send("Problema no servidor");
+    return res.status(500).send("Problema no servidor");
   }
 
   next();
