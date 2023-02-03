@@ -20,9 +20,9 @@ export async function findChoices(req, res) {
   const id = req.params.id;
 
   try {
-    const pollExist = await pollsCollection.findOne({ _id: new ObjectId(id) });
+    const existPoll = await pollsCollection.findOne({ _id: new ObjectId(id) });
 
-    if (!pollExist) {
+    if (!existPoll) {
       return res.status(404).send("Enquete não existente");
     }
 

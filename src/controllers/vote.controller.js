@@ -5,7 +5,10 @@ export async function toVote(req, res) {
   const vote = res.locals.vote;
   console.log(vote);
   try {
-    await votesCollection.insertOne({ createdAt: vote.createdAt, choiceId: ObjectId(vote.choiceId)});
+    await votesCollection.insertOne({
+      createdAt: vote.createdAt,
+      choiceId: ObjectId(vote.choiceId),
+    });
 
     return res.status(201).send("Voto registrado com sucesso");
   } catch (err) {

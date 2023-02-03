@@ -12,9 +12,9 @@ export async function createPoll(req, res) {
 
     await pollsCollection.insertOne(poll);
 
-    res.status(201).send("Enquete criada com sucesso");
+    return res.status(201).send("Enquete criada com sucesso");
   } catch (err) {
-    res.status(500).send("Problema no servidor");
+    return res.status(500).send("Problema no servidor");
   }
 }
 
@@ -22,8 +22,8 @@ export async function findPolls(req, res) {
   try {
     const polls = await pollsCollection.find().toArray();
 
-    res.status(201).send(polls);
+    return res.status(201).send(polls);
   } catch (err) {
-    res.status(500).send("Problema no servidor");
+    return res.status(500).send("Problema no servidor");
   }
 }

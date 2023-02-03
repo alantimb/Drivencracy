@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import dayjs from "dayjs";
 import { choicesCollection, pollsCollection } from "../database/db.js";
 import { choiceSchema } from "../schema/choice.schema.js";
 
@@ -17,9 +18,16 @@ export async function choiceValidation(req, res, next) {
     const existPoll = await pollsCollection.findOne({
       _id: ObjectId(choice.pollId),
     });
-
+    
     if (!existPoll) {
       return res.status(404).send("Enquete não existe");
+    }
+
+    const pollDate = existPoll.expireAt;
+    
+    const expiredPoll = dayjs().isAfter(pollDate, "day");
+    if (expiredPoll) {
+      return res.status(403).send("Enquete expirada");
     }
 
     const existChoice = await choicesCollection.findOne({
@@ -31,9 +39,9 @@ export async function choiceValidation(req, res, next) {
     }
 
     res.locals.choice = choice;
+
+    return next();
   } catch (err) {
     return res.status(500).send("Problema no servidor");
   }
-
-  next();
 }

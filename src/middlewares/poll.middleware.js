@@ -23,5 +23,5 @@ export async function pollValidation(req, res, next) {
 
   res.locals.poll = poll;
 
-  next();
+  return next();
 }
