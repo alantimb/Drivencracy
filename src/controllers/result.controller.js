@@ -32,9 +32,6 @@ export async function giveResult(req, res, next) {
       .find({ _id: voteslist[0]._id })
       .toArray();
 
-    if (mostVoted.length === 0) {
-      return res.status(404).send("Enquete sem votos");
-    }
 
     await resultCollection.insertOne({
       title: pollResult.title,
