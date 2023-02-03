@@ -10,6 +10,7 @@ export async function pollValidation(req, res, next) {
 
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
+    
     return res.status(422).send(errorMessages);
   } else if (poll.expireAt === "" || poll.expireAt === null) {
     const expireAtDate = dayjs().add(30, "day").format("YYYY-MM-DD HH:mm");

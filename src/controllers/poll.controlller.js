@@ -22,7 +22,7 @@ export async function findPolls(req, res) {
   try {
     const polls = await pollsCollection.find().toArray();
 
-    res.send(polls);
+    res.status(201).send(polls);
   } catch (err) {
     res.status(500).send("Problema no servidor");
   }

@@ -10,7 +10,7 @@ export async function choiceValidation(req, res, next) {
     }
 
     const existPoll = await pollsCollection.findOne({ _id: ObjectId(pollId) });
-    console.log(pollId);
+
     if (!existPoll) {
       res.status(404).send("Enquete não existe");
     }
