@@ -21,17 +21,15 @@ export async function giveResult(req, res, next) {
       .toArray();
 
     const voteslist = await votesCollection.aggregate([
-      { $match: { choiceId: { $in: choicesResult.map((c) => c._id) } } },
+      { $match: { choiceId: { $in: choicesResult.map((choice) => choice._id) } } },
       { $group: { _id: "$choiceId", count: { $sum: 1 } } },
       { $sort: { count: -1 } },
       { $limit: 1 },
-    ]);
-    
+    ]).toArray();
 
     const mostVoted = await choicesCollection
       .find({ _id: voteslist[0]._id })
       .toArray();
-
 
     await resultCollection.insertOne({
       title: pollResult.title,
@@ -42,11 +40,13 @@ export async function giveResult(req, res, next) {
       },
     });
 
-    const result = await resultCollection.findOne({ title: pollResult.title}).toArray()
+    const result = await resultCollection
+      .find({ title: pollResult.title })
+      .toArray();
 
     console.log(result);
 
-    res.send("oi");
+    res.status(201).send(result);
   } catch (err) {
     res.status(500).send(err.message);
   }
